@@ -2,7 +2,7 @@ import { useReactiveVar } from '@apollo/client';
 import { faMoon, faSun } from '@fortawesome/free-regular-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React from 'react';
-import styled from 'styled-components';
+import styled from 'styled-components/macro';
 import { darkModeVar, disableDarkMode, enableDarkMode } from '../../apollo';
 
 const Container = styled.div`

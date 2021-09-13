@@ -1,20 +1,20 @@
 import React from 'react';
 import { faInstagram } from '@fortawesome/free-brands-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import styled from 'styled-components';
+import styled from 'styled-components/macro';
 import { useHistory } from 'react-router-dom';
 import { useMutation, gql } from '@apollo/client';
 import { useForm } from 'react-hook-form';
-import AuthLayout from '../components/auth/AuthLayout';
-import BottomBox from '../components/auth/BottomBox';
+import AuthLayout from '../../components/auth/AuthLayout';
+import BottomBox from '../../components/auth/BottomBox';
 // import Button from '../components/auth/Button';
-import FormBox from '../components/auth/FormBox';
+import FormBox from '../../components/auth/FormBox';
 // import Input from '../components/auth/Input';
-import PageTitle from '../components/PageTitle';
-import { FatLink } from '../components/shared';
-import routes from '../routes';
-import Input from '../components/auth/Input';
-import Button from '../components/auth/Button';
+import PageTitle from '../../components/PageTitle';
+import { FatLink } from '../../components/shared';
+import routes from '../../routes';
+import Input from '../../components/auth/Input';
+import Button from '../../components/auth/Button';
 
 const HeaderContainer = styled.div`
   display: flex;

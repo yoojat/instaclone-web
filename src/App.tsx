@@ -1,14 +1,14 @@
 import { ApolloProvider, useReactiveVar } from '@apollo/client';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-import { ThemeProvider } from 'styled-components';
+import { ThemeProvider } from 'styled-components/macro';
 import React from 'react';
 import { HelmetProvider } from 'react-helmet-async';
 import Home from './screens/Home';
-import Login from './screens/Login';
+import Login from './screens/Login/Login';
 import NotFound from './screens/NotFound';
 import { client, darkModeVar, isLoggedInVar } from './apollo';
 import { darkTheme, lightTheme, GlobalStyles } from './styles';
-import SignUp from './screens/SignUp';
+import SignUp from './screens/SignUp/SignUp';
 import routes from './routes';
 
 const App: React.FC = () => {

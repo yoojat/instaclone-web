@@ -1,0 +1,36 @@
+schema:
+  - src/apollo/localState.graphql
+  - http://localhost:4000/graphql
+generates:
+  src/types/graphql.ts:
+    plugins:
+      - typescript
+    config:
+      namingConvention:
+        enumValues: upper-case#upperCase
+  src:
+    preset: near-operation-file
+    documents:
+      - src/**/*.graphql
+    presetConfig:
+      extension: .generated.tsx
+      baseTypesPath: /types/graphql.ts
+    plugins:
+      - typescript-operations
+      - typescript-react-apollo
+    config:
+      preResolveTypes: true
+      withComponent: false
+      withHOC: false
+      withHooks: true
+      declarationKind:
+        type: interface
+        input: interface
+      namingConvention:
+        enumValues: upper-case#upperCase
+      scalars:
+        DateTime: Date
+        JSON: '{[key: string]: any}'
+hooks:
+  afterOneFileWrite:
+    - prettier --write

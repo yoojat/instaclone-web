@@ -2,19 +2,19 @@ import React from 'react';
 import { gql, useMutation } from '@apollo/client';
 import { faFacebookSquare, faInstagram } from '@fortawesome/free-brands-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import styled from 'styled-components';
+import styled from 'styled-components/macro';
 import { useForm } from 'react-hook-form';
 import { useLocation } from 'react-router-dom';
-import AuthLayout from '../components/auth/AuthLayout';
-import FormBox from '../components/auth/FormBox';
-import Input from '../components/auth/Input';
-import Button from '../components/auth/Button';
-import Separator from '../components/auth/Separator';
-import BottomBox from '../components/auth/BottomBox';
-import routes from '../routes';
-import PageTitle from '../components/PageTitle';
-import FormError from '../components/auth/FormError';
-import { logUserIn } from '../apollo';
+import AuthLayout from '../../components/auth/AuthLayout';
+import FormBox from '../../components/auth/FormBox';
+import Input from '../../components/auth/Input';
+import Button from '../../components/auth/Button';
+import Separator from '../../components/auth/Separator';
+import BottomBox from '../../components/auth/BottomBox';
+import routes from '../../routes';
+import PageTitle from '../../components/PageTitle';
+import FormError from '../../components/auth/FormError';
+import { logUserIn } from '../../apollo';
 
 const FacebookLogin = styled.div`
   color: #385285;
@@ -53,7 +53,6 @@ const LOGIN_MUTATION = gql`
 
 const Login: React.FC = () => {
   const location = useLocation<LocationState>();
-  console.log(location);
   const { register, handleSubmit, errors, formState, getValues, setError, clearErrors } = useForm<FormValues>({
     mode: 'onChange',
     defaultValues: {

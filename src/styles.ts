@@ -1,4 +1,4 @@
-import { createGlobalStyle, DefaultTheme } from 'styled-components';
+import { createGlobalStyle, DefaultTheme } from 'styled-components/macro';
 import reset from 'styled-reset';
 
 interface IGlobalStylesProps {
