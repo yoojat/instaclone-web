@@ -1,5 +1,4 @@
 import React from 'react';
-import { gql, useMutation } from '@apollo/client';
 import { faFacebookSquare, faInstagram } from '@fortawesome/free-brands-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import styled from 'styled-components/macro';
@@ -15,6 +14,7 @@ import routes from '../../routes';
 import PageTitle from '../../components/PageTitle';
 import FormError from '../../components/auth/FormError';
 import { logUserIn } from '../../apollo';
+import { LoginMutation, useLoginMutation } from './queries.generated';
 
 const FacebookLogin = styled.div`
   color: #385285;
@@ -41,16 +41,6 @@ interface LocationState {
   string: string;
 }
 
-const LOGIN_MUTATION = gql`
-  mutation login($username: String!, $password: String!) {
-    login(username: $username, password: $password) {
-      ok
-      token
-      error
-    }
-  }
-`;
-
 const Login: React.FC = () => {
   const location = useLocation<LocationState>();
   const { register, handleSubmit, errors, formState, getValues, setError, clearErrors } = useForm<FormValues>({
@@ -61,11 +51,11 @@ const Login: React.FC = () => {
     },
   });
 
-  const onCompleted = (data: any) => {
+  const onCompleted = (data: LoginMutation) => {
     const {
       login: { ok, error, token },
     } = data;
-    if (!ok) {
+    if (!ok && error) {
       setError('result', {
         message: error,
       });
@@ -76,9 +66,12 @@ const Login: React.FC = () => {
       logUserIn(token);
     }
   };
-  const [login, { loading }] = useMutation(LOGIN_MUTATION, {
-    onCompleted,
-  });
+
+  const [login, { loading }] = useLoginMutation({ onCompleted });
+
+  // const [login, { loading }] = useMutation<LoginMutation, LoginMutationVariables>(LOGIN_MUTATION, {
+  //   onCompleted,
+  // });
 
   const clearLoginError = () => {
     clearErrors('result');

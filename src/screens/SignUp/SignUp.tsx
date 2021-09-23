@@ -15,6 +15,7 @@ import { FatLink } from '../../components/shared';
 import routes from '../../routes';
 import Input from '../../components/auth/Input';
 import Button from '../../components/auth/Button';
+import { CreateAccountMutation, CreateAccountMutationVariables } from './queries.generated';
 
 const HeaderContainer = styled.div`
   display: flex;
@@ -45,7 +46,7 @@ const CREATE_ACCOUNT_MUTATION = gql`
 
 const SignUp: React.FC = () => {
   const history = useHistory();
-  const onCompleted = (data: any) => {
+  const onCompleted = (data: CreateAccountMutation) => {
     const { username, password } = getValues();
     const {
       createAccount: { ok },
@@ -59,13 +60,16 @@ const SignUp: React.FC = () => {
       password,
     });
   };
-  const [createAccount, { loading }] = useMutation(CREATE_ACCOUNT_MUTATION, {
-    onCompleted,
-  });
+  const [createAccount, { loading }] = useMutation<CreateAccountMutation, CreateAccountMutationVariables>(
+    CREATE_ACCOUNT_MUTATION,
+    {
+      onCompleted,
+    },
+  );
   const { register, handleSubmit, formState, getValues } = useForm({
     mode: 'onChange',
   });
-  const onSubmitValid = (data: any) => {
+  const onSubmitValid = (data: CreateAccountMutationVariables) => {
     if (loading) {
       return;
     }

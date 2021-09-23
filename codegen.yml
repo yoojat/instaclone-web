@@ -5,7 +5,9 @@ generates:
   src/types/graphql.ts:
     plugins:
       - typescript
+      - typescript-resolvers
     config:
+      withResultType: true
       namingConvention:
         enumValues: upper-case#upperCase
   src:

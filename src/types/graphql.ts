@@ -1,7 +1,11 @@
+import { GraphQLResolveInfo, GraphQLScalarType, GraphQLScalarTypeConfig } from 'graphql';
 export type Maybe<T> = T | null;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
+export type RequireFields<T, K extends keyof T> = { [X in Exclude<keyof T, K>]?: T[X] } & {
+  [P in K]-?: NonNullable<T[P]>;
+};
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -163,17 +167,20 @@ export type MutationUploadPhotoArgs = {
 export type MutationResponse = {
   __typename?: 'MutationResponse';
   error?: Maybe<Scalars['String']>;
+  id?: Maybe<Scalars['Int']>;
   ok: Scalars['Boolean'];
 };
 
 export type Photo = {
   __typename?: 'Photo';
   caption?: Maybe<Scalars['String']>;
-  comments: Scalars['Int'];
+  commentNumber: Scalars['Int'];
+  comments: Array<Maybe<Comment>>;
   createdAt: Scalars['String'];
   file: Scalars['String'];
   hastags?: Maybe<Array<Maybe<Hashtag>>>;
   id: Scalars['Int'];
+  isLiked: Scalars['Boolean'];
   isMine: Scalars['Boolean'];
   likes: Scalars['Int'];
   updatedAt: Scalars['String'];
@@ -182,6 +189,7 @@ export type Photo = {
 
 export type Query = {
   __typename?: 'Query';
+  me?: Maybe<User>;
   searchPhotos?: Maybe<Array<Maybe<Photo>>>;
   searchUsers?: Maybe<Array<Maybe<User>>>;
   seeFeed?: Maybe<Array<Maybe<Photo>>>;
@@ -290,4 +298,472 @@ export type User = {
   totalFollowing: Scalars['Int'];
   updatedAt: Scalars['String'];
   username: Scalars['String'];
+};
+
+export type ResolverTypeWrapper<T> = Promise<T> | T;
+
+export type ResolverWithResolve<TResult, TParent, TContext, TArgs> = {
+  resolve: ResolverFn<TResult, TParent, TContext, TArgs>;
+};
+export type Resolver<TResult, TParent = {}, TContext = {}, TArgs = {}> =
+  | ResolverFn<TResult, TParent, TContext, TArgs>
+  | ResolverWithResolve<TResult, TParent, TContext, TArgs>;
+
+export type ResolverFn<TResult, TParent, TContext, TArgs> = (
+  parent: TParent,
+  args: TArgs,
+  context: TContext,
+  info: GraphQLResolveInfo,
+) => Promise<TResult> | TResult;
+
+export type SubscriptionSubscribeFn<TResult, TParent, TContext, TArgs> = (
+  parent: TParent,
+  args: TArgs,
+  context: TContext,
+  info: GraphQLResolveInfo,
+) => AsyncIterator<TResult> | Promise<AsyncIterator<TResult>>;
+
+export type SubscriptionResolveFn<TResult, TParent, TContext, TArgs> = (
+  parent: TParent,
+  args: TArgs,
+  context: TContext,
+  info: GraphQLResolveInfo,
+) => TResult | Promise<TResult>;
+
+export interface SubscriptionSubscriberObject<TResult, TKey extends string, TParent, TContext, TArgs> {
+  subscribe: SubscriptionSubscribeFn<{ [key in TKey]: TResult }, TParent, TContext, TArgs>;
+  resolve?: SubscriptionResolveFn<TResult, { [key in TKey]: TResult }, TContext, TArgs>;
+}
+
+export interface SubscriptionResolverObject<TResult, TParent, TContext, TArgs> {
+  subscribe: SubscriptionSubscribeFn<any, TParent, TContext, TArgs>;
+  resolve: SubscriptionResolveFn<TResult, any, TContext, TArgs>;
+}
+
+export type SubscriptionObject<TResult, TKey extends string, TParent, TContext, TArgs> =
+  | SubscriptionSubscriberObject<TResult, TKey, TParent, TContext, TArgs>
+  | SubscriptionResolverObject<TResult, TParent, TContext, TArgs>;
+
+export type SubscriptionResolver<TResult, TKey extends string, TParent = {}, TContext = {}, TArgs = {}> =
+  | ((...args: any[]) => SubscriptionObject<TResult, TKey, TParent, TContext, TArgs>)
+  | SubscriptionObject<TResult, TKey, TParent, TContext, TArgs>;
+
+export type TypeResolveFn<TTypes, TParent = {}, TContext = {}> = (
+  parent: TParent,
+  context: TContext,
+  info: GraphQLResolveInfo,
+) => Maybe<TTypes> | Promise<Maybe<TTypes>>;
+
+export type IsTypeOfResolverFn<T = {}, TContext = {}> = (
+  obj: T,
+  context: TContext,
+  info: GraphQLResolveInfo,
+) => boolean | Promise<boolean>;
+
+export type NextResolverFn<T> = () => Promise<T>;
+
+export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs = {}> = (
+  next: NextResolverFn<TResult>,
+  parent: TParent,
+  args: TArgs,
+  context: TContext,
+  info: GraphQLResolveInfo,
+) => TResult | Promise<TResult>;
+
+/** Mapping between all available schema types and the resolvers types */
+export type ResolversTypes = {
+  Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
+  CacheControlScope: CacheControlScope;
+  Comment: ResolverTypeWrapper<Comment>;
+  Hashtag: ResolverTypeWrapper<Hashtag>;
+  Int: ResolverTypeWrapper<Scalars['Int']>;
+  Like: ResolverTypeWrapper<Like>;
+  LoginResult: ResolverTypeWrapper<LoginResult>;
+  Message: ResolverTypeWrapper<Message>;
+  Mutation: ResolverTypeWrapper<{}>;
+  MutationResponse: ResolverTypeWrapper<MutationResponse>;
+  Photo: ResolverTypeWrapper<Photo>;
+  Query: ResolverTypeWrapper<{}>;
+  Room: ResolverTypeWrapper<Room>;
+  SeeFollowerResult: ResolverTypeWrapper<SeeFollowerResult>;
+  SeeFollowingResult: ResolverTypeWrapper<SeeFollowingResult>;
+  String: ResolverTypeWrapper<Scalars['String']>;
+  Subscription: ResolverTypeWrapper<{}>;
+  Upload: ResolverTypeWrapper<Scalars['Upload']>;
+  User: ResolverTypeWrapper<User>;
+};
+
+/** Mapping between all available schema types and the resolvers parents */
+export type ResolversParentTypes = {
+  Boolean: Scalars['Boolean'];
+  Comment: Comment;
+  Hashtag: Hashtag;
+  Int: Scalars['Int'];
+  Like: Like;
+  LoginResult: LoginResult;
+  Message: Message;
+  Mutation: {};
+  MutationResponse: MutationResponse;
+  Photo: Photo;
+  Query: {};
+  Room: Room;
+  SeeFollowerResult: SeeFollowerResult;
+  SeeFollowingResult: SeeFollowingResult;
+  String: Scalars['String'];
+  Subscription: {};
+  Upload: Scalars['Upload'];
+  User: User;
+};
+
+export type CacheControlDirectiveArgs = {
+  maxAge?: Maybe<Scalars['Int']>;
+  scope?: Maybe<CacheControlScope>;
+};
+
+export type CacheControlDirectiveResolver<
+  Result,
+  Parent,
+  ContextType = any,
+  Args = CacheControlDirectiveArgs,
+> = DirectiveResolverFn<Result, Parent, ContextType, Args>;
+
+export type CommentResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['Comment'] = ResolversParentTypes['Comment'],
+> = {
+  createdAt?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  isMine?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  payload?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  photo?: Resolver<ResolversTypes['Photo'], ParentType, ContextType>;
+  updatedAt?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  user?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type HashtagResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['Hashtag'] = ResolversParentTypes['Hashtag'],
+> = {
+  createdAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  hashtag?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  photos?: Resolver<
+    Maybe<Array<Maybe<ResolversTypes['Photo']>>>,
+    ParentType,
+    ContextType,
+    RequireFields<HashtagPhotosArgs, 'page'>
+  >;
+  totalPhotos?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  updatedAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type LikeResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['Like'] = ResolversParentTypes['Like'],
+> = {
+  createdAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  photo?: Resolver<ResolversTypes['Photo'], ParentType, ContextType>;
+  updatedAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type LoginResultResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['LoginResult'] = ResolversParentTypes['LoginResult'],
+> = {
+  error?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  ok?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  token?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type MessageResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['Message'] = ResolversParentTypes['Message'],
+> = {
+  createdAt?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  payload?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  read?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  room?: Resolver<ResolversTypes['Room'], ParentType, ContextType>;
+  updatedAt?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  user?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type MutationResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation'],
+> = {
+  createAccount?: Resolver<
+    ResolversTypes['MutationResponse'],
+    ParentType,
+    ContextType,
+    RequireFields<MutationCreateAccountArgs, 'email' | 'firstName' | 'password' | 'username'>
+  >;
+  createComment?: Resolver<
+    ResolversTypes['MutationResponse'],
+    ParentType,
+    ContextType,
+    RequireFields<MutationCreateCommentArgs, 'payload' | 'photoId'>
+  >;
+  deleteComment?: Resolver<
+    ResolversTypes['MutationResponse'],
+    ParentType,
+    ContextType,
+    RequireFields<MutationDeleteCommentArgs, 'id'>
+  >;
+  deletePhoto?: Resolver<
+    ResolversTypes['MutationResponse'],
+    ParentType,
+    ContextType,
+    RequireFields<MutationDeletePhotoArgs, 'id'>
+  >;
+  editComment?: Resolver<
+    ResolversTypes['MutationResponse'],
+    ParentType,
+    ContextType,
+    RequireFields<MutationEditCommentArgs, 'id' | 'payload'>
+  >;
+  editPhoto?: Resolver<
+    ResolversTypes['MutationResponse'],
+    ParentType,
+    ContextType,
+    RequireFields<MutationEditPhotoArgs, 'caption' | 'id'>
+  >;
+  editProfile?: Resolver<
+    ResolversTypes['MutationResponse'],
+    ParentType,
+    ContextType,
+    RequireFields<MutationEditProfileArgs, never>
+  >;
+  followUser?: Resolver<
+    Maybe<ResolversTypes['MutationResponse']>,
+    ParentType,
+    ContextType,
+    RequireFields<MutationFollowUserArgs, 'username'>
+  >;
+  login?: Resolver<
+    ResolversTypes['LoginResult'],
+    ParentType,
+    ContextType,
+    RequireFields<MutationLoginArgs, 'password' | 'username'>
+  >;
+  readMessage?: Resolver<
+    ResolversTypes['MutationResponse'],
+    ParentType,
+    ContextType,
+    RequireFields<MutationReadMessageArgs, 'id'>
+  >;
+  sendMessage?: Resolver<
+    ResolversTypes['MutationResponse'],
+    ParentType,
+    ContextType,
+    RequireFields<MutationSendMessageArgs, 'payload'>
+  >;
+  toggleLike?: Resolver<
+    ResolversTypes['MutationResponse'],
+    ParentType,
+    ContextType,
+    RequireFields<MutationToggleLikeArgs, 'id'>
+  >;
+  unfollowUser?: Resolver<
+    Maybe<ResolversTypes['MutationResponse']>,
+    ParentType,
+    ContextType,
+    RequireFields<MutationUnfollowUserArgs, 'username'>
+  >;
+  uploadPhoto?: Resolver<
+    Maybe<ResolversTypes['Photo']>,
+    ParentType,
+    ContextType,
+    RequireFields<MutationUploadPhotoArgs, 'file'>
+  >;
+};
+
+export type MutationResponseResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['MutationResponse'] = ResolversParentTypes['MutationResponse'],
+> = {
+  error?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  id?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  ok?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type PhotoResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['Photo'] = ResolversParentTypes['Photo'],
+> = {
+  caption?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  commentNumber?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  comments?: Resolver<Array<Maybe<ResolversTypes['Comment']>>, ParentType, ContextType>;
+  createdAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  file?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  hastags?: Resolver<Maybe<Array<Maybe<ResolversTypes['Hashtag']>>>, ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  isLiked?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  isMine?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  likes?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  updatedAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  user?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type QueryResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query'],
+> = {
+  me?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
+  searchPhotos?: Resolver<
+    Maybe<Array<Maybe<ResolversTypes['Photo']>>>,
+    ParentType,
+    ContextType,
+    RequireFields<QuerySearchPhotosArgs, 'keyword'>
+  >;
+  searchUsers?: Resolver<
+    Maybe<Array<Maybe<ResolversTypes['User']>>>,
+    ParentType,
+    ContextType,
+    RequireFields<QuerySearchUsersArgs, 'keyword'>
+  >;
+  seeFeed?: Resolver<Maybe<Array<Maybe<ResolversTypes['Photo']>>>, ParentType, ContextType>;
+  seeFollowers?: Resolver<
+    Maybe<ResolversTypes['SeeFollowerResult']>,
+    ParentType,
+    ContextType,
+    RequireFields<QuerySeeFollowersArgs, 'page' | 'username'>
+  >;
+  seeFollowing?: Resolver<
+    ResolversTypes['SeeFollowingResult'],
+    ParentType,
+    ContextType,
+    RequireFields<QuerySeeFollowingArgs, 'username'>
+  >;
+  seeHashtag?: Resolver<
+    Maybe<ResolversTypes['Hashtag']>,
+    ParentType,
+    ContextType,
+    RequireFields<QuerySeeHashtagArgs, 'hashtag'>
+  >;
+  seePhoto?: Resolver<Maybe<ResolversTypes['Photo']>, ParentType, ContextType, RequireFields<QuerySeePhotoArgs, 'id'>>;
+  seePhotoComments?: Resolver<
+    Maybe<Array<Maybe<ResolversTypes['Comment']>>>,
+    ParentType,
+    ContextType,
+    RequireFields<QuerySeePhotoCommentsArgs, 'id'>
+  >;
+  seePhotoLikes?: Resolver<
+    Maybe<Array<Maybe<ResolversTypes['User']>>>,
+    ParentType,
+    ContextType,
+    RequireFields<QuerySeePhotoLikesArgs, 'id'>
+  >;
+  seeProfile?: Resolver<
+    Maybe<ResolversTypes['User']>,
+    ParentType,
+    ContextType,
+    RequireFields<QuerySeeProfileArgs, never>
+  >;
+  seeRoom?: Resolver<Maybe<ResolversTypes['Room']>, ParentType, ContextType, RequireFields<QuerySeeRoomArgs, 'id'>>;
+  seeRooms?: Resolver<Maybe<Array<Maybe<ResolversTypes['Room']>>>, ParentType, ContextType>;
+};
+
+export type RoomResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['Room'] = ResolversParentTypes['Room'],
+> = {
+  createdAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  messages?: Resolver<Maybe<Array<Maybe<ResolversTypes['Message']>>>, ParentType, ContextType>;
+  unreadTotal?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  updatedAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  users?: Resolver<Maybe<Array<Maybe<ResolversTypes['User']>>>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type SeeFollowerResultResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['SeeFollowerResult'] = ResolversParentTypes['SeeFollowerResult'],
+> = {
+  error?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  followers?: Resolver<Maybe<Array<Maybe<ResolversTypes['User']>>>, ParentType, ContextType>;
+  ok?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  ttalPages?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type SeeFollowingResultResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['SeeFollowingResult'] = ResolversParentTypes['SeeFollowingResult'],
+> = {
+  error?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  following?: Resolver<Maybe<Array<Maybe<ResolversTypes['User']>>>, ParentType, ContextType>;
+  ok?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type SubscriptionResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['Subscription'] = ResolversParentTypes['Subscription'],
+> = {
+  roomUpdates?: SubscriptionResolver<
+    Maybe<ResolversTypes['Message']>,
+    'roomUpdates',
+    ParentType,
+    ContextType,
+    RequireFields<SubscriptionRoomUpdatesArgs, 'id'>
+  >;
+};
+
+export interface UploadScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['Upload'], any> {
+  name: 'Upload';
+}
+
+export type UserResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User'],
+> = {
+  avatar?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  bio?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  createdAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  email?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  firstName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  followers?: Resolver<Maybe<Array<Maybe<ResolversTypes['User']>>>, ParentType, ContextType>;
+  following?: Resolver<Maybe<Array<Maybe<ResolversTypes['User']>>>, ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  isFollowing?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  isMe?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  lastName?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  photos?: Resolver<Maybe<Array<Maybe<ResolversTypes['Photo']>>>, ParentType, ContextType>;
+  totalFollowers?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  totalFollowing?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  updatedAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  username?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type Resolvers<ContextType = any> = {
+  Comment?: CommentResolvers<ContextType>;
+  Hashtag?: HashtagResolvers<ContextType>;
+  Like?: LikeResolvers<ContextType>;
+  LoginResult?: LoginResultResolvers<ContextType>;
+  Message?: MessageResolvers<ContextType>;
+  Mutation?: MutationResolvers<ContextType>;
+  MutationResponse?: MutationResponseResolvers<ContextType>;
+  Photo?: PhotoResolvers<ContextType>;
+  Query?: QueryResolvers<ContextType>;
+  Room?: RoomResolvers<ContextType>;
+  SeeFollowerResult?: SeeFollowerResultResolvers<ContextType>;
+  SeeFollowingResult?: SeeFollowingResultResolvers<ContextType>;
+  Subscription?: SubscriptionResolvers<ContextType>;
+  Upload?: GraphQLScalarType;
+  User?: UserResolvers<ContextType>;
+};
+
+export type DirectiveResolvers<ContextType = any> = {
+  cacheControl?: CacheControlDirectiveResolver<any, any, ContextType>;
 };

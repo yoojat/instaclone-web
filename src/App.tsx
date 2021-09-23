@@ -3,13 +3,14 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { ThemeProvider } from 'styled-components/macro';
 import React from 'react';
 import { HelmetProvider } from 'react-helmet-async';
-import Home from './screens/Home';
+import Home from './screens/Home/Home';
 import Login from './screens/Login/Login';
 import NotFound from './screens/NotFound';
 import { client, darkModeVar, isLoggedInVar } from './apollo';
 import { darkTheme, lightTheme, GlobalStyles } from './styles';
 import SignUp from './screens/SignUp/SignUp';
 import routes from './routes';
+import Layout from './components/Layout';
 
 const App: React.FC = () => {
   const isLoggedIn = useReactiveVar(isLoggedInVar);
@@ -22,7 +23,13 @@ const App: React.FC = () => {
           <Router>
             <Switch>
               <Route path={routes.home} exact>
-                {isLoggedIn ? <Home /> : <Login />}
+                {isLoggedIn ? (
+                  <Layout>
+                    <Home />
+                  </Layout>
+                ) : (
+                  <Login />
+                )}
               </Route>
               {!isLoggedIn ? (
                 //  로그인 하지 않았을 때만 접속 가능

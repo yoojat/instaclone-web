@@ -1,0 +1,20 @@
+mutation toggleLike($id: Int!) {
+  toggleLike(id: $id) {
+    ok
+    error
+  }
+}
+
+mutation createComment($photoId: Int!, $payload: String!) {
+  createComment(photoId: $photoId, payload: $payload) {
+    ok
+    error
+    id
+  }
+}
+
+mutation deleteComment($id: Int!) {
+  deleteComment(id: $id) {
+    ok
+  }
+}
