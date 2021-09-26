@@ -1,26 +1,15 @@
 query seeFeed {
   seeFeed {
-    id
+    ...PhotoFragment
     user {
       username
       avatar
     }
-    file
     caption
-    likes
     comments {
-      id
-      user {
-        username
-        avatar
-      }
-      payload
-      isMine
-      createdAt
+      ...CommentFragment
     }
-    commentNumber
     createdAt
     isMine
-    isLiked
   }
 }

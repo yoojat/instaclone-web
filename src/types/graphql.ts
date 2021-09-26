@@ -82,12 +82,12 @@ export type Mutation = {
   editComment: MutationResponse;
   editPhoto: MutationResponse;
   editProfile: MutationResponse;
-  followUser?: Maybe<MutationResponse>;
+  followUser: MutationResponse;
   login: LoginResult;
   readMessage: MutationResponse;
   sendMessage: MutationResponse;
   toggleLike: MutationResponse;
-  unfollowUser?: Maybe<MutationResponse>;
+  unfollowUser: MutationResponse;
   uploadPhoto?: Maybe<Photo>;
 };
 
@@ -541,7 +541,7 @@ export type MutationResolvers<
     RequireFields<MutationEditProfileArgs, never>
   >;
   followUser?: Resolver<
-    Maybe<ResolversTypes['MutationResponse']>,
+    ResolversTypes['MutationResponse'],
     ParentType,
     ContextType,
     RequireFields<MutationFollowUserArgs, 'username'>
@@ -571,7 +571,7 @@ export type MutationResolvers<
     RequireFields<MutationToggleLikeArgs, 'id'>
   >;
   unfollowUser?: Resolver<
-    Maybe<ResolversTypes['MutationResponse']>,
+    ResolversTypes['MutationResponse'],
     ParentType,
     ContextType,
     RequireFields<MutationUnfollowUserArgs, 'username'>

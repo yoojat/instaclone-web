@@ -1,6 +1,7 @@
 import * as Types from '../../types/graphql';
 
 import { gql } from '@apollo/client';
+import { PhotoFragmentFragmentDoc, CommentFragmentFragmentDoc } from '../../fragments.generated';
 import * as Apollo from '@apollo/client';
 const defaultOptions = {};
 export type SeeFeedQueryVariables = Types.Exact<{ [key: string]: never }>;
@@ -11,13 +12,13 @@ export type SeeFeedQuery = {
     Array<
       Types.Maybe<{
         __typename?: 'Photo';
-        id: number;
-        file: string;
         caption?: Types.Maybe<string>;
-        likes: number;
-        commentNumber: number;
         createdAt: string;
         isMine: boolean;
+        id: number;
+        file: string;
+        likes: number;
+        commentNumber: number;
         isLiked: boolean;
         user: { __typename?: 'User'; username: string; avatar?: Types.Maybe<string> };
         comments: Array<
@@ -38,30 +39,21 @@ export type SeeFeedQuery = {
 export const SeeFeedDocument = gql`
   query seeFeed {
     seeFeed {
-      id
+      ...PhotoFragment
       user {
         username
         avatar
       }
-      file
       caption
-      likes
       comments {
-        id
-        user {
-          username
-          avatar
-        }
-        payload
-        isMine
-        createdAt
+        ...CommentFragment
       }
-      commentNumber
       createdAt
       isMine
-      isLiked
     }
   }
+  ${PhotoFragmentFragmentDoc}
+  ${CommentFragmentFragmentDoc}
 `;
 
 /**

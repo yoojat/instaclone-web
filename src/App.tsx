@@ -11,6 +11,7 @@ import { darkTheme, lightTheme, GlobalStyles } from './styles';
 import SignUp from './screens/SignUp/SignUp';
 import routes from './routes';
 import Layout from './components/Layout';
+import Profile from './screens/Profile/Profile';
 
 const App: React.FC = () => {
   const isLoggedIn = useReactiveVar(isLoggedInVar);
@@ -37,6 +38,11 @@ const App: React.FC = () => {
                   <SignUp />
                 </Route>
               ) : null}
+              <Route path={`/users/:username`}>
+                <Layout>
+                  <Profile />
+                </Layout>
+              </Route>
               <Route>
                 <NotFound />
               </Route>

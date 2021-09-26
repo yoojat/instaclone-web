@@ -1,0 +1,28 @@
+query seeProfile($username: String!) {
+  seeProfile(username: $username) {
+    firstName
+    lastName
+    username
+    bio
+    avatar
+    photos {
+      ...PhotoFragment
+    }
+    totalFollowing
+    totalFollowers
+    isMe
+    isFollowing
+  }
+}
+
+mutation followUser($username: String!) {
+  followUser(username: $username) {
+    ok
+  }
+}
+
+mutation unfollowUser($username: String!) {
+  unfollowUser(username: $username) {
+    ok
+  }
+}

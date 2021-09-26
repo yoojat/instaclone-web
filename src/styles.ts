@@ -37,6 +37,7 @@ export const GlobalStyles = createGlobalStyle<IGlobalStylesProps>`
     color: ${(props) => props.theme.fontColor};
   }
   a{
-    text-decoration: none;;
+    text-decoration: none;
+    color: inherit;
   }
 `;

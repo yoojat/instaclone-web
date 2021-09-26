@@ -63,8 +63,10 @@ const Comment: React.FC<Props> = ({ id, photoId, isMine, author, payload }) => {
   };
   return (
     <CommentContainer>
-      <FatText>{author}</FatText>
       <CommentCaption>
+        <Link to={`/users/${author}`}>
+          <FatText>{author}</FatText>
+        </Link>
         {payload.split(' ').map((word, index) =>
           /#[\w]+/.test(word) ? (
             <React.Fragment key={index}>

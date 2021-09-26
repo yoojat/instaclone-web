@@ -60,13 +60,18 @@ const Header: React.FC = () => {
           {isLoggedIn ? (
             <IConsContainer>
               <Icon>
-                <FontAwesomeIcon icon={faHome} size="lg" />
+                <Link to={routes.home}>
+                  <FontAwesomeIcon icon={faHome} size="lg" />
+                </Link>
               </Icon>
               <Icon>
                 <FontAwesomeIcon icon={faCompass} size="lg" />
               </Icon>
               <Icon>
-                <Avatar url={data?.me?.avatar || ''} />
+                {/* <Avatar url={data?.me?.avatar || ''} /> */}
+                <Link to={`/users/${data?.me?.username}`}>
+                  <Avatar url={data?.me?.avatar || ''} />
+                </Link>
               </Icon>
             </IConsContainer>
           ) : (
